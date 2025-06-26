@@ -1,0 +1,23 @@
+1) Projeto Vue + MindElixir
+
+1.1) Estrutura do Projeto
+1.1.1) Componente FileDrop
+1.1.2) Componente MindMap
+1.1.3) App.vue e integração
+
+1.2) Bibliotecas Usadas
+1.2.1) mind-elixir-core
+1.2.2) mammoth (docx)
+1.2.3) parser personalizado
+
+1.3) Funcionalidades Futuras
+1.3.1) Exportar como imagem
+1.3.2) Compartilhamento de mapas
+1.3.3) Suporte a outros formatos
+
+2) Outra Ideia
+
+2.1) Mapa Mental Colaborativo
+2.2) Sincronização em tempo real
+
+3) Fim do Documento
