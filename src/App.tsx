@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { FileDrop } from "./components/FileDrop";
 import { MindMap } from "./components/MindMap";
 import type { MindElixirData } from "./utils/parser";
@@ -6,15 +6,17 @@ import html2canvas from "html2canvas";
 
 export const App: React.FC = () => {
   const [mapData, setMapData] = useState<MindElixirData | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null)
 
-  const handleSave = () => {
-    const el = document.querySelector('.mind-elixir-box') as HTMLElement
+  const handleSave = (e: { preventDefault: () => void; }) => {
+    e.preventDefault();
+    const el = containerRef.current?.querySelector('.main-node-container') as HTMLElement
+    console.log(el)
     if (!el) return
 
     html2canvas(el, {
       useCORS: true,
-      backgroundColor: '#fff',
-      scale: 2,
+      backgroundColor: '#252526',
     }).then((canva) => {
       const link = document.createElement('a')
       link.download = 'mapa-mental.png'
@@ -40,10 +42,10 @@ export const App: React.FC = () => {
       <div style={{ padding: "1rem" }}>
         <FileDrop onFileProcessed={setMapData} />
       </div>
-      <div>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} >
         <button onClick={handleSave}>Salvar</button>
       </div>
-      <div style={{ flex: 1, overflow: "hidden", padding: '1rem' }}>
+      <div ref={containerRef} style={{ flex: 1, overflow: "hidden", padding: '1rem' }}>
         {mapData && <MindMap data={mapData} />}
       </div>
     </main>
