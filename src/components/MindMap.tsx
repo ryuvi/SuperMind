@@ -7,7 +7,7 @@ interface MindMapProps {
 
 export const MindMap: React.FC<MindMapProps> = ({ data }) => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const mindInstanceRef = useRef<MindElixir | null>(null)
+  const mindInstanceRef = useRef<InstanceType<typeof MindElixir> | null>(null)
 
   useEffect(() => {
     if (!containerRef.current) return

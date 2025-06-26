@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "html2canvas": "^1.4.1",
     "mammoth": "^1.9.1",
     "mind-elixir": "^4.6.1",
     "react": "^19.1.0",
