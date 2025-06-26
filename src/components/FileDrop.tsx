@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import { extractTextFromFile } from '../utils/fileLoader'
-import { parseNumberedTextToTree, type MindElixirData } from '../utils/parser'
+import { parseTextToTree, type MindElixirData } from '../utils/parser'
 
 interface FileDropProps {
   onFileProcessed: (data: MindElixirData) => void
@@ -27,7 +27,7 @@ export const FileDrop: React.FC<FileDropProps> = ({ onFileProcessed }) => {
   const processFile = (file: File) => {
     extractTextFromFile(file)
       .then(text => {
-        const tree = parseNumberedTextToTree(text)
+        const tree = parseTextToTree(text)
         onFileProcessed(tree)
       })
       .catch(err => alert('Erro ao processar arquivo: ' + err.message))

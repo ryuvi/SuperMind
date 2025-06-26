@@ -1,6 +1,7 @@
 export interface MindElixirNode {
   id: string
   topic: string
+  note?: string
   children?: MindElixirNode[]
 }
 
@@ -8,35 +9,104 @@ export interface MindElixirData {
   nodeData: MindElixirNode
 }
 
-export function parseNumberedTextToTree(text: string): MindElixirData {
-  const lines = text.split(/\r?\n/).filter(Boolean)
+export function parseTextToTree(text: string): MindElixirData {
+  if (isMarkdown(text)) {
+    return parseMarkdownHeadings(text)
+  } else {
+    return parseNumberedStructure(text)
+  }
+}
+
+function isMarkdown(text: string): boolean {
+  return /^#+\s+/m.test(text)
+}
+
+function parseMarkdownHeadings(text: string): MindElixirData {
+  const lines = text.split(/\r?\n/)
+  const rootNodes: MindElixirNode[] = []
+  const nodeStack: MindElixirNode[] = []
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim()
+    const match = line.match(/^(#+)\s+(.*)/)
+    if (!match) continue
+
+    const level = match[1].length
+    const topic = match[2]
+
+    const node: MindElixirNode = {
+      id: `md-${i}`,
+      topic,
+      children: [],
+    }
+
+    const nextLine = lines[i + 1]?.trim()
+    if (nextLine && !nextLine.startsWith('#')) {
+      node.note = nextLine
+      i++
+    }
+
+    while (nodeStack.length >= level) {
+      nodeStack.pop()
+    }
+
+    if (nodeStack.length === 0) {
+      rootNodes.push(node)
+    } else {
+      const parent = nodeStack[nodeStack.length - 1]
+      parent.children?.push(node)
+    }
+
+    nodeStack.push(node)
+  }
+
+  return {
+    nodeData: {
+      id: 'root',
+      topic: 'Mapa Mental (Markdown)',
+      children: rootNodes,
+    },
+  }
+}
+
+function parseNumberedStructure(text: string): MindElixirData {
+  const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean)
   const rootNodes: MindElixirNode[] = []
   const nodeMap: Record<string, MindElixirNode> = {}
 
-  for (const line of lines) {
-    const match = line.match(/^(\d+(?:\.\d+)*)\)\s+(.*)/)
-    if (!match) continue
+  let i = 0
+  while (i < lines.length) {
+    const match = lines[i].match(/^(\d+(?:\.\d+)*)(?:[)\.-])?\s+(.*)/)
+    if (!match) {
+      i++
+      continue
+    }
 
     const fullIndex = match[1]
-    const title = match[2].trim()
-    const levelParts = fullIndex.split('.')
-
+    const title = match[2]
     const node: MindElixirNode = {
       id: fullIndex,
       topic: title,
       children: [],
     }
 
+    const nextLine = lines[i + 1]
+    if (nextLine && !/^\d+(\.\d+)*[)\.-]?\s+/.test(nextLine)) {
+      node.note = nextLine
+      i++
+    }
+
+    const level = fullIndex.split('.').length
     nodeMap[fullIndex] = node
 
-    if (levelParts.length === 1) {
+    if (level === 1) {
       rootNodes.push(node)
     } else {
-      const parentIndex = levelParts.slice(0, -1).join('.')
-      if (nodeMap[parentIndex]) {
-        nodeMap[parentIndex].children?.push(node)
-      }
+      const parentIndex = fullIndex.split('.').slice(0, -1).join('.')
+      nodeMap[parentIndex]?.children?.push(node)
     }
+
+    i++
   }
 
   return {
