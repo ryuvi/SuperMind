@@ -1,13 +1,13 @@
 import React, { useRef } from 'react'
 import { extractTextFromFile } from '../utils/fileLoader'
-import { parseTextToTree, type MindElixirData } from '../utils/parser'
+import { parseTextToTree } from '../utils/parser'
+import { useMindStore } from '../stores/mindStore'
+import { useTextStore } from '../stores/textStore'
 
-interface FileDropProps {
-  onFileProcessed: (data: MindElixirData) => void
-}
-
-export const FileDrop: React.FC<FileDropProps> = ({ onFileProcessed }) => {
+export const FileDrop = () => {
   const inputRef = useRef<HTMLInputElement | null>(null)
+  const { setData } = useMindStore()
+  const { title } = useTextStore()
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault()
@@ -27,8 +27,8 @@ export const FileDrop: React.FC<FileDropProps> = ({ onFileProcessed }) => {
   const processFile = (file: File) => {
     extractTextFromFile(file)
       .then(text => {
-        const tree = parseTextToTree(text)
-        onFileProcessed(tree)
+        const tree = parseTextToTree(text, title)
+        setData(tree)
       })
       .catch(err => alert('Erro ao processar arquivo: ' + err.message))
   }
@@ -44,13 +44,17 @@ export const FileDrop: React.FC<FileDropProps> = ({ onFileProcessed }) => {
       onDrop={handleDrop}
       style={{
         border: '2px dashed #999',
-        padding: '2rem',
+        // padding: '2rem',
         textAlign: 'center',
-        margin: '1rem',
+        // margin: '1rem',
         borderRadius: '8px',
         backgroundColor: '#f9f9f9',
         cursor: 'pointer',
         color: '#999',
+        height: '75px',
+        alignItems: 'center',
+        display: 'flex',
+        justifyContent: 'center'
       }}
     >
       <p>Arraste e solte seu arquivo ou clique para selecionar (.md, .txt, .docx)</p>

@@ -9,11 +9,11 @@ export interface MindElixirData {
   nodeData: MindElixirNode
 }
 
-export function parseTextToTree(text: string): MindElixirData {
+export function parseTextToTree(text: string, title: string): MindElixirData {
   if (isMarkdown(text)) {
-    return parseMarkdownHeadings(text)
+    return parseMarkdownHeadings(text, title)
   } else {
-    return parseNumberedStructure(text)
+    return parseNumberedStructure(text, title)
   }
 }
 
@@ -21,7 +21,7 @@ function isMarkdown(text: string): boolean {
   return /^#+\s+/m.test(text)
 }
 
-function parseMarkdownHeadings(text: string): MindElixirData {
+function parseMarkdownHeadings(text: string, title: string): MindElixirData {
   const lines = text.split(/\r?\n/)
   const rootNodes: MindElixirNode[] = []
   const nodeStack: MindElixirNode[] = []
@@ -63,13 +63,13 @@ function parseMarkdownHeadings(text: string): MindElixirData {
   return {
     nodeData: {
       id: 'root',
-      topic: 'Mapa Mental (Markdown)',
+      topic: title,
       children: rootNodes,
     },
   }
 }
 
-function parseNumberedStructure(text: string): MindElixirData {
+function parseNumberedStructure(text: string, title: string): MindElixirData {
   const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean)
   const rootNodes: MindElixirNode[] = []
   const nodeMap: Record<string, MindElixirNode> = {}
@@ -112,7 +112,7 @@ function parseNumberedStructure(text: string): MindElixirData {
   return {
     nodeData: {
       id: 'root',
-      topic: 'Mapa Mental',
+      topic: title,
       children: rootNodes,
     },
   }

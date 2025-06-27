@@ -1,93 +1,100 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { FileDrop } from "./components/FileDrop";
 import { MindMap } from "./components/MindMap";
-import type { MindElixirData } from "./utils/parser";
 import './App.css'
-import { useMindStore } from "./utils/mindStore";
+import { useMindStore } from "./stores/mindStore";
+import TextInput from "./components/TextInput";
+import { PrimeReactProvider } from 'primereact/api'
+import Title from "./components/Title";
+import { useTextStore } from "./stores/textStore";
 
 export const App: React.FC = () => {
-  const [mapData, setMapData] = useState<MindElixirData | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const { download } = useMindStore();
+  const { download, data: mapData } = useMindStore();
+  const { title } = useTextStore()
 
   return (
-    <main
-      style={{
-        width: "100dvw",
-
-        height: "100vh",
-        margin: 0,
-        padding: 0,
-        fontFamily: "'Segoe UI', sans-serif",
-        background: "#f0f2f5",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <div
+    <PrimeReactProvider>
+      <main
         style={{
-          padding: "1rem",
-          width: "100%",
-          boxSizing: "border-box",
+          width: "100dvw",
+
+          height: "100vh",
+          margin: 0,
+          padding: 0,
+          fontFamily: "'Segoe UI', sans-serif",
+          background: "#f0f2f5",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
-        <FileDrop onFileProcessed={setMapData} />
-      </div>
-
-      {mapData && (
         <div
           style={{
-            padding: "0.5rem 1rem",
-            display: "flex",
-            justifyContent: "center",
+            padding: "1rem",
             width: "100%",
             boxSizing: "border-box",
           }}
         >
-          <button
-            onClick={download}
+          <Title />
+          <TextInput />
+          <FileDrop  />
+        </div>
+
+        {mapData && (
+          <div
             style={{
-              padding: "0.75rem 1.25rem",
-              fontSize: "1.1rem",
-              borderRadius: "8px",
-              border: "none",
-              background: "#007bff",
-              color: "#fff",
-              cursor: "pointer",
+              padding: "0.5rem 1rem",
+              display: "flex",
+              justifyContent: "center",
               width: "100%",
-              maxWidth: "300px",
+              boxSizing: "border-box",
             }}
           >
-            Salvar como imagem
-          </button>
-        </div>
-      )}
+            <button
+              onClick={() => download(title.toLowerCase().split(' ').join('_'))}
+              style={{
+                padding: "0.75rem 1.25rem",
+                fontSize: "1.1rem",
+                borderRadius: "8px",
+                border: "none",
+                background: "#007bff",
+                color: "#fff",
+                cursor: "pointer",
+                width: "100%",
+                maxWidth: "300px",
+              }}
+            >
+              Salvar como imagem
+            </button>
+          </div>
+        )}
 
-      <div
-        ref={containerRef}
-        style={{
-          flex: 1,
-          overflow: "auto",
-          padding: "1rem",
-          boxSizing: "border-box",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          maxWidth: '100dvw',
-          width: '100%'
-        }}
-      >
         <div
+          ref={containerRef}
           style={{
-            width: "100%",
-            minHeight: "300px",
-            overflowX: "auto",
+            flex: 1,
+            overflow: "auto",
+            padding: "1rem",
+            boxSizing: "border-box",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            maxWidth: '100dvw',
+            width: '100%'
           }}
         >
-          {mapData && <MindMap data={mapData} />}
+          <div
+            style={{
+              width: "100%",
+              minHeight: "300px",
+              overflowX: "auto",
+            }}
+          >
+            {mapData && <MindMap data={mapData} />}
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </PrimeReactProvider>
   );
 };
 

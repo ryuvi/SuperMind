@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import MindElixir, { type Options, type MindElixirData } from "mind-elixir";
-import { useMindStore } from "../utils/mindStore";
+import { useMindStore } from "../stores/mindStore";
 
 
 interface MindMapProps {
