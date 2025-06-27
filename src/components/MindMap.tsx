@@ -36,12 +36,6 @@ export const MindMap: React.FC<MindMapProps> = ({ data }) => {
       mind.container.style.touchAction = "none";
       mindInstanceRef.current = mind;
       setInstance(mind);
-
-      // Ajusta para centralizar e fazer fit na tela
-      setTimeout(() => {
-        mind.resize();
-        mind.reRender();
-      }, 100);
     }
   }, [data]);
 

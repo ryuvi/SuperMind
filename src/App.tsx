@@ -2,7 +2,6 @@ import React, { useRef, useState } from "react";
 import { FileDrop } from "./components/FileDrop";
 import { MindMap } from "./components/MindMap";
 import type { MindElixirData } from "./utils/parser";
-import html2canvas from "html2canvas";
 import './App.css'
 import { useMindStore } from "./utils/mindStore";
 
@@ -10,22 +9,6 @@ export const App: React.FC = () => {
   const [mapData, setMapData] = useState<MindElixirData | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const { download } = useMindStore();
-
-  const handleSave = (e: React.MouseEvent) => {
-    e.preventDefault();
-    const el = containerRef.current?.querySelector('.main-node-container') as HTMLElement;
-    if (!el) return;
-
-    html2canvas(el, {
-      useCORS: true,
-      backgroundColor: '#252526',
-    }).then((canva) => {
-      const link = document.createElement('a');
-      link.download = 'mapa-mental.png';
-      link.href = canva.toDataURL('image/png');
-      link.click();
-    });
-  };
 
   return (
     <main
