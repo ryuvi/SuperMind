@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from "react";
 import MindElixir, { type Options, type MindElixirData } from "mind-elixir";
 import { useMindStore } from "../stores/mindStore";
 
-
 interface MindMapProps {
   data: MindElixirData;
 }
@@ -16,8 +15,10 @@ export const MindMap: React.FC<MindMapProps> = ({ data }) => {
     if (!containerRef.current) return;
 
     if (mindInstanceRef.current) {
+      // Atualiza o mapa com novos dados
       mindInstanceRef.current.refresh(data);
     } else {
+      // Inicializa novo mapa
       const options: Options = {
         el: containerRef.current,
         direction: MindElixir.SIDE,
@@ -27,7 +28,7 @@ export const MindMap: React.FC<MindMapProps> = ({ data }) => {
         keypress: false,
         mouseSelectionButton: 0,
         overflowHidden: false,
-        selectionContainer: ''
+        selectionContainer: '',
       };
 
       const mind = new MindElixir(options);
@@ -40,23 +41,11 @@ export const MindMap: React.FC<MindMapProps> = ({ data }) => {
   }, [data]);
 
   return (
+    <div className="w-full h-full overflow-auto border border-gray-300 rounded-xl bg-white shadow-sm focus:outline-none">
       <div
-        style={{
-          width: "100%",
-          height: "100%",
-          overflow: "auto", // ⚠️ importante: libera scroll
-          border: "1px solid #ccc",
-          borderRadius: "8px",
-          backgroundColor: "#fff",
-        }}
-      >
-        <div
-          ref={containerRef}
-          style={{
-            minWidth: "800px", // ⚠️ garante espaço inicial
-            minHeight: "600px",
-          }}
-        />
-      </div>
+        ref={containerRef}
+        className="min-w-[800px] min-h-[600px]"
+      />
+    </div>
   );
 };
