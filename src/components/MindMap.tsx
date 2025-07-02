@@ -26,7 +26,7 @@ export const MindMap: React.FC<MindMapProps> = ({ data }) => {
         contextMenu: true,
         toolBar: true,
         keypress: false,
-        mouseSelectionButton: 0,
+        mouseSelectionButton: 2,
         overflowHidden: false,
         selectionContainer: '',
       };
